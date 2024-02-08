@@ -1,6 +1,5 @@
 package com.mycompany.app;
 
-import com.google.gson.Gson;
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,6 +51,36 @@ class RespuestaServicio {
         this.Saldos = Arrays.asList(saldo);
         this.Movimientos = movimientos;
     }
+    
+    public String toJson() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("\"resultadoOperacion\":\"").append(resultadoOperacion).append("\",");
+        sb.append("\"Saldos\":[");
+        for (Saldo saldo : Saldos) {
+            sb.append("{");
+            sb.append("\"curpAhorrador\":\"").append(saldo.curpAhorrador).append("\",");
+            // Continuar añadiendo todos los campos de Saldo
+            sb.append("\"fechainicio\":\"").append(saldo.fechainicio).append("\",");
+            sb.append("\"fechafin\":\"").append(saldo.fechafin).append("\"");
+            sb.append("},");
+        }
+        sb.deleteCharAt(sb.length() - 1); // Eliminar la última coma
+        sb.append("],");
+        sb.append("\"Movimientos\":[");
+        for (Movimiento movimiento : Movimientos) {
+            sb.append("{");
+            sb.append("\"fecha\":\"").append(movimiento.fecha).append("\",");
+            sb.append("\"descripcion\":\"").append(movimiento.descripcion).append("\",");
+            sb.append("\"importe\":").append(movimiento.importe).append(",");
+            sb.append("\"tipo\":\"").append(movimiento.tipo).append("\"");
+            sb.append("},");
+        }
+        sb.deleteCharAt(sb.length() - 1); // Eliminar la última coma
+        sb.append("]");
+        sb.append("}");
+        return sb.toString();
+    }
 }
 
 public class App {
@@ -67,8 +96,7 @@ public class App {
         );
 
         RespuestaServicio respuesta = new RespuestaServicio(saldo, movimientos);
-        Gson gson = new Gson();
-        String jsonRespuesta = gson.toJson(respuesta);
+        String jsonRespuesta = respuesta.toJson();
         System.out.println(jsonRespuesta);
     }
 }
